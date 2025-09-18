@@ -1,54 +1,44 @@
 pipeline {
-  agent none
-  stage
-('Front-end') {
-  agent {
-    docker { image 'node:16-alpine' }
-  }
-  steps {
-    sh '''
-      cat > app.js <<'EOF'
-      const express = require('express');
-      const app = express();
-      app.get('/', (req, res) => {
-        res.send('Hello, World!');
-      });
-      app.listen(3000, () => {
-        console.log('App running on port 3000');
-      });
-      EOF
+  agent none   // no global agent, we’ll define per stage
 
-      npm init -y
-      npm install express
-      node app.js &
-      sleep 5
-      curl http://localhost:3000
-    '''
-  }
-}
-stage('Front-end') {
-  agent {
-    docker { image 'node:16-alpine' }
-  }
-  steps {
-    sh '''
-      cat > app.js <<'EOF'
-      const express = require('express');
-      const app = express();
-      app.get('/', (req, res) => {
-        res.send('Hello, World!');
-      });
-      app.listen(3000, () => {
-        console.log('App running on port 3000');
-      });
-      EOF
+  stages {
+    stage('Back-end Java') {
+      agent {
+        docker { image 'maven:3.8.1-adoptopenjdk-11' }
+      }
+      steps {
+        sh '''
+          echo "public class HelloWorld { public static void main(String[] args) { System.out.println(\\"Hello, World!\\"); } }" > HelloWorld.java
+          javac HelloWorld.java
+          java HelloWorld
+        '''
+      }
+    }
 
-      npm init -y
-      npm install express
-      node app.js &
-      sleep 5
-      curl http://localhost:3000
-    '''
+    stage('Front-end') {
+      agent {
+        docker { image 'node:16-alpine' }
+      }
+      steps {
+        sh '''
+          cat > app.js <<'EOF'
+          const express = require('express');
+          const app = express();
+          app.get('/', (req, res) => {
+            res.send('Hello, World!');
+          });
+          app.listen(3000, () => {
+            console.log('App running on port 3000');
+          });
+          EOF
+
+          npm init -y
+          npm install express
+          node app.js &
+          sleep 5
+          curl http://localhost:3000
+        '''
+      }
+    }
   }
-}
 }
