@@ -10,14 +10,12 @@ pipeline {
       }
     }
    }
-   stages {
     stage('Front-end'){
       agent {
-        Docker {image 'nodejs:latest'}
+        Docker {image 'nodejs:v24.8.0'}
       }
       steps{
         sh "Node --version "
       }
     }
    }
-}
