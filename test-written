@@ -3,14 +3,13 @@ pipeline {
    stages {
     stage('Back-end'){
       agent {
-        Docker {image 'maven:3.8.1-adoptopenjdk-11'}
+        Docker {image 'maven:openjdk-jre-11'}
       }
       steps{
         sh " java --version "
       }
     }
-   }
-    stage('Front-end'){
+   stage('Front-end'){
       agent {
         Docker {image 'nodejs:v24.8.0'}
       }
@@ -18,4 +17,6 @@ pipeline {
         sh "Node --version "
       }
     }
-   }
+  }
+}
+  
