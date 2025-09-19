@@ -11,12 +11,12 @@ pipeline {
         sh " mvm --version "
       }
     }
-   stage('Front-end'){
+   stage('Front-end') {
       agent {
-        Docker {image 'node:16-alpine'}
+        docker { image 'node:16-alpine' }
       }
-      steps{
-        sh "Node --version "
+      steps {
+        sh 'node --version'
       }
     }
   }
